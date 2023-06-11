@@ -26,7 +26,7 @@ const deleteLikeByCardId = (req, res) => {
     { $pull: { likes: userId } }, // убрать _id из массива
     { new: true },
   )
-    .then((like) => (like ? res.status(200).send({ data: like }) : handle404Error({ message: 'Карточка не найдена' }, res)))
+    .then((like) => (like ? res.status(200).send({ data: like }) : handle400Error({ message: 'Карточка не найдена' }, res)))
     .catch((err) => handleDefaultError(err, res));
 };
 
