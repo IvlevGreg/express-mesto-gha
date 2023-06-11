@@ -5,7 +5,7 @@ const handle400Error = (res) => res.status(400).send({ message: DEFAULT_400_ERRO
 const handle404Error = ({ message }, res) => res.status(404).send({ message });
 const handleValidationError = (err, res) => {
   const message = `${Object.values(err.errors).map((error) => error.message).join(', ')}`;
-  res.status(404).send({ message });
+  res.status(400).send({ message });
 };
 
 module.exports = {
