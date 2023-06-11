@@ -22,7 +22,7 @@ const updateUserById = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
-  users.findByIdAndUpdate(userId, { name, about }, { returnDocument: 'after' })
+  users.findByIdAndUpdate(userId, { name, about }, { returnDocument: 'after', runValidators: true })
     .then((usersData) => (usersData ? res.status(200).send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
     .catch((err) => {
       if (err.name === 'ValidationError') return handleValidationError(err, res);
@@ -34,7 +34,7 @@ const updateUserAvatarById = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
-  users.findByIdAndUpdate(userId, { avatar }, { returnDocument: 'after' })
+  users.findByIdAndUpdate(userId, { avatar }, { returnDocument: 'after', runValidators: true })
     .then((usersData) => (usersData ? res.status(200).send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
     .catch((err) => {
       if (err.name === 'ValidationError') return handleValidationError(err, res);
