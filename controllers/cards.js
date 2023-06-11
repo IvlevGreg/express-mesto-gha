@@ -14,7 +14,10 @@ const deleteCardById = (req, res) => {
 
   cards.findByIdAndRemove(cardId)
     .then((cardsData) => (cardsData ? res.status(200).send({ data: cardsData }) : handle404Error({ message: 'Карточка не найдена' }, res)))
-    .catch((err) => handleDefaultError(err, res));
+    .catch((err) => {
+      if (err.name === 'CastError') return handle400Error(res);
+      handleDefaultError(err, res);
+    });
 };
 
 const deleteLikeByCardId = (req, res) => {
@@ -27,7 +30,10 @@ const deleteLikeByCardId = (req, res) => {
     { new: true },
   )
     .then((like) => (like ? res.status(200).send({ data: like }) : handle404Error({ message: 'Карточка не найдена' }, res)))
-    .catch((err) => handleDefaultError(err, res));
+    .catch((err) => {
+      if (err.name === 'CastError') return handle400Error(res);
+      handleDefaultError(err, res);
+    });
 };
 
 const putLikeByCardId = (req, res) => {
@@ -40,7 +46,10 @@ const putLikeByCardId = (req, res) => {
     { new: true },
   )
     .then((like) => (like ? res.status(200).send({ data: like }) : handle404Error({ message: 'Карточка не найдена' }, res)))
-    .catch((err) => handleDefaultError(err, res));
+    .catch((err) => {
+      if (err.name === 'CastError') return handle400Error(res);
+      handleDefaultError(err, res);
+    });
 };
 
 const createCard = (req, res) => {

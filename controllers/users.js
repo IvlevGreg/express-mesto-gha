@@ -15,7 +15,10 @@ const getUserById = (req, res) => {
 
   users.findById(userId)
     .then((usersData) => (usersData ? res.status(200).send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
-    .catch((err) => handleDefaultError(err, res));
+    .catch((err) => {
+      if (err.name === 'CastError') return handle400Error(res);
+      handleDefaultError(err, res);
+    });
 };
 
 const updateUserById = (req, res) => {
