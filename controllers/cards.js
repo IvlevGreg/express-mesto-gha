@@ -45,14 +45,16 @@ const putLikeByCardId = (req, res) => {
 
 const createCard = (req, res) => {
   const {
-    name, link, owner, likes, createdAt,
+    name, link, likes, createdAt,
   } = req.body;
+  const userId = req.user._id;
+
   if (!(name && link)) {
     return handle400Error(res);
   }
 
   cards.create({
-    name, link, owner, likes, createdAt,
+    name, link, owner: userId, likes, createdAt,
   })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
