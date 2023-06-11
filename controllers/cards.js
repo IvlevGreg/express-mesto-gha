@@ -47,7 +47,7 @@ const createCard = (req, res) => {
   const {
     name, link, owner, likes, createdAt,
   } = req.body;
-  if (!(name && link && owner && likes && createdAt)) {
+  if (!(name && link)) {
     return handle400Error(res);
   }
 
