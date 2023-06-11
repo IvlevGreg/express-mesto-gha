@@ -24,7 +24,10 @@ const updateUserById = (req, res) => {
 
   users.findByIdAndUpdate(userId, { name, about }, { returnDocument: 'after' })
     .then((usersData) => (usersData ? res.status(200).send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
-    .catch((err) => handleDefaultError(err, res));
+    .catch((err) => {
+      if (err.name === 'ValidationError') return handleValidationError(err, res);
+      return handleDefaultError(err, res);
+    });
 };
 
 const updateUserAvatarById = (req, res) => {
@@ -33,7 +36,10 @@ const updateUserAvatarById = (req, res) => {
 
   users.findByIdAndUpdate(userId, { avatar }, { returnDocument: 'after' })
     .then((usersData) => (usersData ? res.status(200).send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
-    .catch((err) => handleDefaultError(err, res));
+    .catch((err) => {
+      if (err.name === 'ValidationError') return handleValidationError(err, res);
+      return handleDefaultError(err, res);
+    });
 };
 
 const createUser = (req, res) => {
