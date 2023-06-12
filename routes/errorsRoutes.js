@@ -3,6 +3,6 @@ const {
   handle404Errors,
 } = require('../controllers/errors');
 
-router.get('*', handle404Errors);
+router.all('*', handle404Errors);
 
 module.exports = router;
