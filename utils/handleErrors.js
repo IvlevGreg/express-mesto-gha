@@ -1,6 +1,5 @@
 const DEFAULT_400_ERROR_TEXT = 'Переданы некорректные данные';
 const DEFAULT_401_ERROR_TEXT = 'Необходима авторизация';
-const DEFAULT_403_ERROR_TEXT = 'Доступ запрещен проверьте данные авторизации';
 const DEFAULT_500_ERROR_TEXT = 'Упс... произошла ошибка';
 
 const handleDefaultError = (err, res) => res.status(500).send({ message: DEFAULT_500_ERROR_TEXT });
