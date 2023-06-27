@@ -8,13 +8,6 @@ const routes = require('./routes');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6485db5c0750de16a844b990',
-  };
-
-  next();
-});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
