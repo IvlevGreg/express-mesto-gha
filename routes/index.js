@@ -1,11 +1,16 @@
 const router = require('express').Router();
 
+const auth = require('../middlewares/auth');
+
 const usersRoutes = require('./users');
 const cardsRoutes = require('./cards');
+const authRoutes = require('./auth');
 const errorsRoutes = require('./errorsRoutes');
 
-router.use('/users', usersRoutes);
-router.use('/cards', cardsRoutes);
-router.use('*', errorsRoutes);
+router.use('/users', auth, usersRoutes);
+router.use('/cards', auth, cardsRoutes);
+router.use('*', auth, errorsRoutes);
+
+router.use('/', authRoutes);
 
 module.exports = router;
