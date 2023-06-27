@@ -14,3 +14,7 @@ git: https://github.com/IvlevGreg/express-mesto-gha
 
 `npm run start` — запускает сервер   
 `npm run dev` — запускает сервер с hot-reload
+`brew services start mongodb-community@4.4` — запускает mongo (Mac & brew) см доку
+
+
+
