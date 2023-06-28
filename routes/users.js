@@ -11,14 +11,8 @@ const {
 
 const { LINK_PATTERN } = require('../utils/linkPattern');
 
-const validateUserId = celebrate({
-  body: Joi.object().keys({
-    userId: Joi.string().required().min(8),
-  }),
-});
-
-router.get('/', validateUserId, getUsers);
-router.get('/:userId', validateUserId, getUserById);
+router.get('/', getUsers);
+router.get('/:userId', getUserById);
 router.get('/me', getUserMe);
 
 router.patch('/me', celebrate({
