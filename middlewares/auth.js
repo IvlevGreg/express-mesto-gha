@@ -4,16 +4,11 @@ const {
   AuthError,
 } = require('../utils/Errors/AuthError');
 
-const extractBearerToken = (header) => header.replace('Bearer ', '');
-
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  const token = req.cookies.jwt;
+  if (!token) {
     throw new AuthError();
   }
-
-  const token = extractBearerToken(authorization);
   let payload;
 
   try {
