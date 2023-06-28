@@ -35,12 +35,14 @@ const createUser = (req, res) => {
     return handle400Error(res);
   }
 
-  users.create({ name, about, avatar })
+  bcrypt.hash(password, 10).then((hash) => users.create({
+    email, password: hash, name, about, avatar,
+  })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') return handleValidationError(err, res);
       return handleDefaultError(err, res);
-    });
+    }));
 };
 
 module.exports = {
