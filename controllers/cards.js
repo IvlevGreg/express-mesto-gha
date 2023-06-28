@@ -23,7 +23,7 @@ const deleteCardById = (req, res, next) => {
       throw new NotFoundError('Карточка не найдена');
     })
     .catch((err) => {
-      if (err.name === 'CastError') throw new Default400Error();
+      if (err.name === 'CastError') next(new Default400Error());
       next();
     });
 };
@@ -46,7 +46,7 @@ const deleteLikeByCardId = (req, res, next) => {
     })
 
     .catch((err) => {
-      if (err.name === 'CastError') throw new Default400Error();
+      if (err.name === 'CastError') next(new Default400Error());
       next();
     });
 };
@@ -68,7 +68,7 @@ const putLikeByCardId = (req, res, next) => {
       throw new NotFoundError('Карточка не найдена');
     })
     .catch((err) => {
-      if (err.name === 'CastError') throw new Default400Error();
+      if (err.name === 'CastError') next(new Default400Error());
       next();
     });
 };
@@ -88,8 +88,7 @@ const createCard = (req, res, next) => {
   })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') throw new ValidationError(err.errors);
-
+      if (err.name === 'ValidationError') next(new ValidationError(err.errors));
       return next();
     });
 };
