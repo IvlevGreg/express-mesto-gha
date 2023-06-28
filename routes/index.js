@@ -9,8 +9,9 @@ const errorsRoutes = require('./errorsRoutes');
 
 router.use('/users', auth, usersRoutes);
 router.use('/cards', auth, cardsRoutes);
-router.use('*', auth, errorsRoutes);
 
 router.use('/', authRoutes);
+
+router.use('*', auth, errorsRoutes);
 
 module.exports = router;
