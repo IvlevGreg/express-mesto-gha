@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 const users = require('../models/user');
 
 const {
-  handle400Error, handle401Error, handleValidationError, handleDefaultError,
-} = require('../utils/handleErrors');
+  ValidationError, AuthError, Default400Error,
+} = require('../utils/Errors');
 
 const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new Error('Неправильные почта или пароль'));
 
@@ -24,7 +24,9 @@ const login = (req, res) => {
           httpOnly: true,
         });
     })
-    .catch((err) => handle401Error(err, res));
+    .catch(() => {
+      throw new AuthError();
+    });
 };
 
 const createUser = (req, res) => {
@@ -32,7 +34,7 @@ const createUser = (req, res) => {
     name, about, avatar, email, password,
   } = req.body;
   if (!(email && password)) {
-    return handle400Error(res);
+    throw new Default400Error();
   }
 
   bcrypt.hash(password, 10).then((hash) => users.create({
@@ -40,8 +42,8 @@ const createUser = (req, res) => {
   })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') return handleValidationError(err, res);
-      return handleDefaultError(err, res);
+      if (err.name === 'ValidationError') throw new ValidationError(err.errors);
+      throw new Default400Error();
     }));
 };
 

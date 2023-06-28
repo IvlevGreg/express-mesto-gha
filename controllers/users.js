@@ -2,58 +2,57 @@ const jwt = require('jsonwebtoken');
 const users = require('../models/user');
 
 const {
-  handleDefaultError, handle400Error, handleValidationError,
-  handle404Error,
-} = require('../utils/handleErrors');
+  NotFoundError,
+} = require('../utils/Errors');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   users.find({})
     .then((usersData) => res.send({ data: usersData }))
-    .catch((err) => handleDefaultError(err, res));
+    .catch(next);
 };
 
-const findUserById = (userId, res) => users.findById(userId)
-  .then((usersData) => (usersData ? res.send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
-  .catch((err) => {
-    if (err.name === 'CastError') return handle400Error(res);
-    handleDefaultError(err, res);
-  });
+const sendUsersData = (usersData, res) => {
+  if (usersData) {
+    res.send({ data: usersData });
+    return;
+  }
+  throw new NotFoundError('Пользователь не найден');
+};
 
-const getUserById = (req, res) => {
+const findUserById = (userId, res, next) => users.findById(userId)
+  .then((usersData) => sendUsersData(usersData, res))
+
+  .catch(next);
+
+const getUserById = (req, res, next) => {
   const { userId } = req.params;
 
-  findUserById(res, userId);
+  findUserById(res, userId, next);
 };
 
-const getUserMe = (req, res) => {
+const getUserMe = (req, res, next) => {
   const token = req.cookies.jwt;
   const userId = jwt.verify({ token }, 'super-strong-secret');
 
-  findUserById(userId, res);
+  findUserById(userId, res, next);
 };
 
-const updateUserById = (req, res) => {
+const updateUserById = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
   users.findByIdAndUpdate(userId, { name, about }, { returnDocument: 'after', runValidators: true })
-    .then((usersData) => (usersData ? res.send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
-    .catch((err) => {
-      if (err.name === 'ValidationError') return handleValidationError(err, res);
-      return handleDefaultError(err, res);
-    });
+    .then((usersData) => sendUsersData(usersData, res))
+    .catch(next);
 };
 
-const updateUserAvatarById = (req, res) => {
+const updateUserAvatarById = (req, res, next) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
   users.findByIdAndUpdate(userId, { avatar }, { returnDocument: 'after', runValidators: true })
-    .then((usersData) => (usersData ? res.send({ data: usersData }) : handle404Error({ message: 'Пользователь не найден' }, res)))
-    .catch((err) => {
-      if (err.name === 'ValidationError') return handleValidationError(err, res);
-      return handleDefaultError(err, res);
-    });
+    .then((usersData) => sendUsersData(usersData, res))
+    .catch(next);
 };
 
 module.exports = {

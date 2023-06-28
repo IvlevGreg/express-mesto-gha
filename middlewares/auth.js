@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
+
 const {
-  handle401Error,
-} = require('../utils/handleErrors');
+  AuthError,
+} = require('../utils/Errors/AuthError');
 
 const extractBearerToken = (header) => header.replace('Bearer ', '');
 
@@ -9,7 +10,7 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return handle401Error(res);
+    throw new AuthError();
   }
 
   const token = extractBearerToken(authorization);
@@ -18,7 +19,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'super-strong-secret');
   } catch (err) {
-    return handle401Error(res);
+    throw new AuthError();
   }
 
   req.user = payload;

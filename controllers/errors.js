@@ -1,7 +1,9 @@
-const { handle404Error } = require('../utils/handleErrors');
+const {
+  NotFoundError,
+} = require('../utils/Errors');
 
-const handle404Errors = (req, res) => {
-  handle404Error({ message: 'Такой страницы не существует' }, res);
+const handle404Errors = () => {
+  throw new NotFoundError('Такой страницы не существует');
 };
 
 module.exports = { handle404Errors };
