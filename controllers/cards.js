@@ -3,8 +3,12 @@ const cards = require('../models/card');
 const NOT_FOUND_CARD_ERROR_TEXT = 'Карточка не найдена';
 
 const {
-  ValidationError, Default400Error, NotFoundError,
+  ValidationError, Default400Error, NotFoundError, ForbiddenError,
 } = require('../utils/Errors');
+
+const {
+  getVerifyDataFromToken,
+} = require('../utils/getVerifyDataFromToken');
 
 const getCards = (req, res, next) => {
   cards.find({})
@@ -15,10 +19,17 @@ const getCards = (req, res, next) => {
 const deleteCardById = (req, res, next) => {
   const { cardId } = req.params;
 
-  cards.findByIdAndRemove(cardId)
+  cards.findById(cardId)
     .then((cardsData) => {
       if (cardsData) {
-        res.send({ data: cardsData });
+        const { _id } = getVerifyDataFromToken(req);
+
+        if (_id !== cardsData.owner.toHexString()) {
+          next(new ForbiddenError('Вы пытаетесь удалить карточку другого пользователя'));
+          return;
+        }
+
+        cards.deleteOne({ _id }).then(() => res.send({ data: cardsData }));
         return;
       }
 

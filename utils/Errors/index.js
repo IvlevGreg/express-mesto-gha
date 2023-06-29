@@ -3,6 +3,7 @@ const { NotFoundError } = require('./NotFoundError');
 const { ValidationError } = require('./ValidationError');
 const { Default400Error } = require('./Default400Error');
 const { UserExist } = require('./UserExist');
+const { ForbiddenError } = require('./ForbiddenError');
 
 module.exports = {
   AuthError,
@@ -10,4 +11,5 @@ module.exports = {
   ValidationError,
   Default400Error,
   UserExist,
+  ForbiddenError,
 };
