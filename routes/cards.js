@@ -18,15 +18,17 @@ const validateCardId = celebrate({
   }),
 });
 
-router.get('/', getCards);
-
-router.post('/', celebrate({
+const createCardValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string()
       .pattern(LINK_PATTERN),
   }),
-}), createCard);
+});
+
+router.get('/', getCards);
+
+router.post('/', createCardValidation, createCard);
 
 router.put('/:cardId/likes', validateCardId, putLikeByCardId);
 
