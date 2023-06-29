@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     index: true,
+    dropDups: true,
     validate: {
       validator: validator.isEmail,
       message: 'Неправильный формат почты',
