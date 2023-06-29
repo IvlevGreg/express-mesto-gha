@@ -48,7 +48,23 @@ const createUser = (req, res, next) => {
           httpOnly: true,
         });
 
-      res.status(201).send({ data: user });
+      const {
+        name: nameData,
+        email: emailData,
+        about: aboutData,
+        avatar: avatarData,
+        _id,
+      } = user;
+
+      res.status(201).send({
+        data: {
+          name: nameData,
+          email: emailData,
+          about: aboutData,
+          avatar: avatarData,
+          _id,
+        },
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') next(new ValidationError(err.errors));
