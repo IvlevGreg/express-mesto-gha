@@ -5,10 +5,15 @@ const {
 } = require('../utils/Errors/AuthError');
 
 module.exports = (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (!token) {
+  const tokenCoookie = req.cookies.jwt;
+  const { authorization } = req.headers;
+
+  if (!tokenCoookie && !(authorization && authorization.startsWith('Bearer '))) {
     throw new AuthError();
   }
+
+  const token = tokenCoookie || authorization.replace('Bearer ', '');
+
   let payload;
 
   try {
