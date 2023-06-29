@@ -20,8 +20,10 @@ app.use(errors());
 app.use(errorHandler);
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
+  // eslint-disable-next-line no-console
   .then(() => console.log('Connected!'));
 
 app.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log(`Example app listening on port ${port}`);
 });

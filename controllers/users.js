@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const users = require('../models/user');
 
 const {
@@ -8,7 +7,6 @@ const {
 const {
   getVerifyDataFromToken,
 } = require('../utils/getVerifyDataFromToken');
-const { AuthError } = require('../utils/Errors/AuthError');
 
 const NOT_FOUND_USER_ERROR_TEXT = 'Пользователь не найден';
 
