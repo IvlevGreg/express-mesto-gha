@@ -5,6 +5,8 @@ const {
   NotFoundError,
 } = require('../utils/Errors');
 
+const NOT_FOUND_USER_ERROR_TEXT = 'Пользователь не найден';
+
 const getUsers = (req, res, next) => {
   users.find({})
     .then((usersData) => res.send({ data: usersData }))
@@ -16,13 +18,13 @@ const sendUsersData = (usersData, res) => {
     res.send({ data: usersData });
     return;
   }
-  throw new NotFoundError('Пользователь не найден');
+  throw new NotFoundError(NOT_FOUND_USER_ERROR_TEXT);
 };
 
 const findUserById = (userId, res, next) => users.findById(userId)
   .then((usersData) => sendUsersData(usersData, res))
 
-  .catch(next);
+  .catch(() => next(new NotFoundError(NOT_FOUND_USER_ERROR_TEXT)));
 
 const getUserById = (req, res, next) => {
   const { userId } = req.params;

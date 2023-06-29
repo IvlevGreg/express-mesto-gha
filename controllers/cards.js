@@ -1,5 +1,7 @@
 const cards = require('../models/card');
 
+const NOT_FOUND_CARD_ERROR_TEXT = 'Карточка не найдена';
+
 const {
   ValidationError, Default400Error, NotFoundError,
 } = require('../utils/Errors');
@@ -7,7 +9,7 @@ const {
 const getCards = (req, res, next) => {
   cards.find({})
     .then((cardsData) => res.send({ data: cardsData }))
-    .catch(next);
+    .catch(() => next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT)));
 };
 
 const deleteCardById = (req, res, next) => {
@@ -20,11 +22,10 @@ const deleteCardById = (req, res, next) => {
         return;
       }
 
-      throw new NotFoundError('Карточка не найдена');
+      throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') next(new Default400Error());
-      next();
+    .catch(() => {
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     });
 };
 
@@ -42,12 +43,11 @@ const deleteLikeByCardId = (req, res, next) => {
         res.send({ data: like });
         return;
       }
-      throw new NotFoundError('Карточка не найдена');
+      throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
     })
 
-    .catch((err) => {
-      if (err.name === 'CastError') next(new Default400Error());
-      next();
+    .catch(() => {
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     });
 };
 
@@ -65,11 +65,10 @@ const putLikeByCardId = (req, res, next) => {
         res.send({ data: like });
         return;
       }
-      throw new NotFoundError('Карточка не найдена');
+      throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') next(new Default400Error());
-      next();
+    .catch(() => {
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     });
 };
 
