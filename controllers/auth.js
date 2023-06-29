@@ -3,8 +3,10 @@ const jwt = require('jsonwebtoken');
 
 const users = require('../models/user');
 
+const USER_409_ERROR_TEXT = 'Пользователь с таким email уже существует';
+
 const {
-  ValidationError, AuthError, Default400Error,
+  ValidationError, AuthError, Default400Error, UserExist,
 } = require('../utils/Errors');
 
 const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new Error('Неправильные почта или пароль'));
@@ -68,6 +70,7 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') next(new ValidationError(err.errors));
+      if (err.name === 'MongoServerError') next(new UserExist(USER_409_ERROR_TEXT));
       next(new Default400Error());
     }));
 };
