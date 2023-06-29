@@ -12,8 +12,8 @@ const {
 const { LINK_PATTERN } = require('../utils/linkPattern');
 
 router.get('/', getUsers);
-router.get('/:userId', getUserById);
 router.get('/me', getUserMe);
+router.get('/:userId', getUserById);
 
 router.patch('/me', celebrate({
   body: Joi.object().keys({

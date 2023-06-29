@@ -5,6 +5,11 @@ const {
   NotFoundError,
 } = require('../utils/Errors');
 
+const {
+  getVerifyDataFromToken,
+} = require('../utils/getVerifyDataFromToken');
+const { AuthError } = require('../utils/Errors/AuthError');
+
 const NOT_FOUND_USER_ERROR_TEXT = 'Пользователь не найден';
 
 const getUsers = (req, res, next) => {
@@ -33,10 +38,9 @@ const getUserById = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  const token = req.cookies.jwt;
-  const userId = jwt.verify({ token }, 'super-strong-secret');
+  const token = getVerifyDataFromToken(req);
 
-  findUserById(userId, res, next);
+  findUserById(token, res, next);
 };
 
 const updateUserById = (req, res, next) => {
