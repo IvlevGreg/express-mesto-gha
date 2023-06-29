@@ -14,10 +14,11 @@ const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new Error('Неп
 const login = (req, res, next) => {
   const { password, email } = req.body;
   users.findOne({ email }).select('+password')
-    .then((userData) => userData && bcrypt.compare(password, userData.password
+    .then((userData) => (userData && bcrypt.compare(password, userData.password)
       ? userData : rejectPromiseWrongEmailOrPassword()))
     .then((userData) => {
       const token = jwt.sign({ _id: userData._id }, 'super-strong-secret', { expiresIn: '7d' });
+
       res
         .cookie('jwt', token, {
           maxAge: 3600000,
@@ -27,7 +28,7 @@ const login = (req, res, next) => {
       res.send({ message: 'Всё верно!' });
     })
     .catch(() => {
-      next(new AuthError());
+      next(new Default400Error());
     });
 };
 

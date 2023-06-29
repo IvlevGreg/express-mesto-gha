@@ -7,10 +7,10 @@ const cardsRoutes = require('./cards');
 const authRoutes = require('./auth');
 const errorsRoutes = require('./errorsRoutes');
 
+router.use('/', authRoutes);
+
 router.use('/users', auth, usersRoutes);
 router.use('/cards', auth, cardsRoutes);
-
-router.use('/', authRoutes);
 
 router.use('*', auth, errorsRoutes);
 
