@@ -12,6 +12,12 @@ const {
 } = require('../controllers/cards');
 // [https://[A-Z0-9-._~:/?#[]@!$&'()*+,;=]]$/
 
+const validateCardId = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().min(5),
+  }),
+});
+
 router.get('/', getCards);
 
 router.post('/', celebrate({
@@ -22,9 +28,9 @@ router.post('/', celebrate({
   }),
 }), createCard);
 
-router.put('/:cardId/likes', putLikeByCardId);
+router.put('/:cardId/likes', validateCardId, putLikeByCardId);
 
-router.delete('/:cardId/likes', deleteLikeByCardId);
-router.delete('/:cardId', deleteCardById);
+router.delete('/:cardId/likes', validateCardId, deleteLikeByCardId);
+router.delete('/:cardId', validateCardId, deleteCardById);
 
 module.exports = router;
