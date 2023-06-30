@@ -18,7 +18,7 @@ const getUsers = (req, res, next) => {
 
 const sendUsersData = (usersData, res) => {
   if (usersData) {
-    res.send({ data: usersData });
+    res.send(usersData);
     return;
   }
   throw new NotFoundError(NOT_FOUND_USER_ERROR_TEXT);
