@@ -11,22 +11,32 @@ const {
 
 const { LINK_PATTERN } = require('../utils/linkPattern');
 
-router.get('/', getUsers);
-router.get('/me', getUserMe);
-router.get('/:userId', getUserById);
+const validateUserId = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().required().min(5),
+  }),
+});
 
-router.patch('/me', celebrate({
+const validatePatchMe = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
     avatar: Joi.string().pattern(LINK_PATTERN),
   }),
-}), updateUserById);
-router.patch('/me/avatar', celebrate({
+});
+
+const validatePatchMeAvatar = celebrate({
   body: Joi.object().keys({
     userId: Joi.string().required().min(8),
     avatar: Joi.string().required().pattern(LINK_PATTERN),
   }),
-}), updateUserAvatarById);
+});
+
+router.get('/', getUsers);
+router.get('/me', getUserMe);
+router.get('/:userId', validateUserId, getUserById);
+
+router.patch('/me', validatePatchMe, updateUserById);
+router.patch('/me/avatar', validatePatchMeAvatar, updateUserAvatarById);
 
 module.exports = router;
