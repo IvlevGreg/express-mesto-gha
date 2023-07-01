@@ -1,26 +1,46 @@
 const cards = require('../models/card');
-const {
-  handleDefaultError, handle400Error, handle404Error, handleValidationError,
-} = require('../utils/handleErrors');
 
-const getCards = (req, res) => {
+const NOT_FOUND_CARD_ERROR_TEXT = 'Карточка не найдена';
+
+const {
+  ValidationError, Default400Error, NotFoundError, ForbiddenError,
+} = require('../utils/Errors');
+
+const {
+  getVerifyDataFromToken,
+} = require('../utils/getVerifyDataFromToken');
+
+const getCards = (req, res, next) => {
   cards.find({})
     .then((cardsData) => res.send({ data: cardsData }))
-    .catch((err) => handleDefaultError(err, res));
+    .catch(() => next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT)));
 };
 
-const deleteCardById = (req, res) => {
+const deleteCardById = (req, res, next) => {
   const { cardId } = req.params;
 
-  cards.findByIdAndRemove(cardId)
-    .then((cardsData) => (cardsData ? res.send({ data: cardsData }) : handle404Error({ message: 'Карточка не найдена' }, res)))
-    .catch((err) => {
-      if (err.name === 'CastError') return handle400Error(res);
-      handleDefaultError(err, res);
+  cards.findById(cardId)
+    .then((cardsData) => {
+      if (cardsData) {
+        const { _id } = getVerifyDataFromToken(req);
+
+        if (_id !== cardsData.owner.toHexString()) {
+          next(new ForbiddenError('Вы пытаетесь удалить карточку другого пользователя'));
+          return;
+        }
+
+        cards.deleteOne({ _id: cardId }).then(() => res.send({ data: cardsData }));
+        return;
+      }
+
+      throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
+    })
+    .catch(() => {
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     });
 };
 
-const deleteLikeByCardId = (req, res) => {
+const deleteLikeByCardId = (req, res, next) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
@@ -29,14 +49,19 @@ const deleteLikeByCardId = (req, res) => {
     { $pull: { likes: userId } }, // убрать _id из массива
     { new: true },
   )
-    .then((like) => (like ? res.send({ data: like }) : handle404Error({ message: 'Карточка не найдена' }, res)))
-    .catch((err) => {
-      if (err.name === 'CastError') return handle400Error(res);
-      handleDefaultError(err, res);
+    .then((like) => {
+      if (like) {
+        res.send({ data: like });
+        return;
+      }
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
+    })
+    .catch(() => {
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     });
 };
 
-const putLikeByCardId = (req, res) => {
+const putLikeByCardId = (req, res, next) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
@@ -45,21 +70,26 @@ const putLikeByCardId = (req, res) => {
     { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .then((like) => (like ? res.send({ data: like }) : handle404Error({ message: 'Карточка не найдена' }, res)))
-    .catch((err) => {
-      if (err.name === 'CastError') return handle400Error(res);
-      handleDefaultError(err, res);
+    .then((like) => {
+      if (like) {
+        res.send({ data: like });
+        return;
+      }
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
+    })
+    .catch(() => {
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     });
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const {
     name, link,
   } = req.body;
   const userId = req.user._id;
 
   if (!(name && link)) {
-    return handle400Error(res);
+    throw new Default400Error();
   }
 
   cards.create({
@@ -67,9 +97,8 @@ const createCard = (req, res) => {
   })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') return handleValidationError(err, res);
-
-      return handleDefaultError(err, res);
+      if (err.name === 'ValidationError') next(new ValidationError(err.errors));
+      return next();
     });
 };
 
