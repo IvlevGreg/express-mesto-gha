@@ -54,9 +54,8 @@ const deleteLikeByCardId = (req, res, next) => {
         res.send({ data: like });
         return;
       }
-      throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     })
-
     .catch(() => {
       next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     });
@@ -76,7 +75,7 @@ const putLikeByCardId = (req, res, next) => {
         res.send({ data: like });
         return;
       }
-      throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
+      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     })
     .catch(() => {
       next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
