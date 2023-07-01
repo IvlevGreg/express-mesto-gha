@@ -27,7 +27,6 @@ const validatePatchMe = celebrate({
 
 const validatePatchMeAvatar = celebrate({
   body: Joi.object().keys({
-    userId: Joi.string().required().min(8),
     avatar: Joi.string().required().pattern(LINK_PATTERN),
   }),
 });
