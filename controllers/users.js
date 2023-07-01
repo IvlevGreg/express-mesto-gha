@@ -32,7 +32,7 @@ const findUserById = (userId, res, next) => users.findById(userId)
 const getUserById = (req, res, next) => {
   const { userId } = req.params;
 
-  findUserById(res, userId, next);
+  findUserById(userId, res, next);
 };
 
 const getUserMe = (req, res, next) => {
