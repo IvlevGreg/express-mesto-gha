@@ -12,7 +12,7 @@ const NOT_FOUND_USER_ERROR_TEXT = 'Пользователь не найден';
 
 const getUsers = (req, res, next) => {
   users.find({})
-    .then((usersData) => res.send({ data: usersData }))
+    .then((usersData) => res.send(usersData))
     .catch(next);
 };
 
