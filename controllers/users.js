@@ -42,10 +42,10 @@ const getUserMe = (req, res, next) => {
 };
 
 const updateUserById = (req, res, next) => {
-  const { name, about } = req.body;
+  const { name, about, avatar } = req.body;
   const userId = req.user._id;
 
-  users.findByIdAndUpdate(userId, { name, about }, { returnDocument: 'after', runValidators: true })
+  users.findByIdAndUpdate(userId, { name, about, avatar }, { returnDocument: 'after', runValidators: true })
     .then((usersData) => sendUsersData(usersData, res))
     .catch(next);
 };
