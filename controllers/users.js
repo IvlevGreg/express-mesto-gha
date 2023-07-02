@@ -4,10 +4,6 @@ const {
   NotFoundError,
 } = require('../utils/Errors');
 
-const {
-  getUserIdFromCookiesOrHeaders,
-} = require('../utils/getUserIdFromCookiesOrHeaders');
-
 const NOT_FOUND_USER_ERROR_TEXT = 'Пользователь не найден';
 
 const getUsers = (req, res, next) => {
@@ -36,9 +32,9 @@ const getUserById = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  const token = getUserIdFromCookiesOrHeaders(req, next);
+  const { _id } = req.user;
 
-  findUserById(token, res, next);
+  findUserById(_id, res, next);
 };
 
 const updateUserById = (req, res, next) => {

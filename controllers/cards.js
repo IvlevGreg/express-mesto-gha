@@ -6,10 +6,6 @@ const {
   Default400Error, NotFoundError, ForbiddenError,
 } = require('../utils/Errors');
 
-const {
-  getUserIdFromCookiesOrHeaders,
-} = require('../utils/getUserIdFromCookiesOrHeaders');
-
 const getCards = (req, res, next) => {
   cards.find({})
     .then((cardsData) => res.send({ data: cardsData }))
@@ -22,7 +18,7 @@ const deleteCardById = (req, res, next) => {
   cards.findById(cardId)
     .then((cardsData) => {
       if (cardsData) {
-        const { _id } = getUserIdFromCookiesOrHeaders(req, next);
+        const { _id } = req.user;
 
         if (_id !== cardsData.owner.toHexString()) {
           next(new ForbiddenError('Вы пытаетесь удалить карточку другого пользователя'));
