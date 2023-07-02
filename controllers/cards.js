@@ -25,7 +25,8 @@ const deleteCardById = (req, res, next) => {
           return;
         }
 
-        cards.deleteOne({ _id: cardId }).then(() => res.send({ data: cardsData })).catch(() => next(new Default400Error('Ошибка удаления карточки')));
+        cards.deleteOne({ _id: cardId }).then(() => res.send({ data: cardsData }))
+          .catch(() => next(new Default400Error('Ошибка удаления карточки')));
         return;
       }
 

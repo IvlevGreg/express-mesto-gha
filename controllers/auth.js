@@ -9,7 +9,9 @@ const {
   UserExist, AuthError,
 } = require('../utils/Errors');
 
-const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new AuthError('Неверное сочетание почты и пароля'));
+const rejectPromiseWrongEmailOrPassword = () => Promise.reject(
+  new AuthError('Неверное сочетание почты и пароля'),
+);
 
 const login = (req, res, next) => {
   const { password, email } = req.body;
