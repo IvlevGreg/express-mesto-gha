@@ -1,10 +1,25 @@
+const jwt = require('jsonwebtoken');
+
 const {
-  getUserIdFromCookiesOrHeaders,
-} = require('../utils/getUserIdFromCookiesOrHeaders');
+  AuthError,
+} = require('../utils/Errors');
 
 module.exports = (req, res, next) => {
-  const token = getUserIdFromCookiesOrHeaders(req, next);
-  req.user = token;
+  const tokenCookie = req.cookies.jwt;
+  const { authorization } = req.headers;
+
+  if (!tokenCookie && !(authorization && authorization.startsWith('Bearer '))) {
+    next(new AuthError());
+    return;
+  }
+
+  const token = tokenCookie || authorization.replace('Bearer ', '');
+
+  try {
+    req.user = jwt.verify(token, 'super-strong-secret');
+  } catch (err) {
+    next(new AuthError());
+  }
 
   next();
 };
