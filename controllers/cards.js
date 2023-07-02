@@ -3,7 +3,7 @@ const cards = require('../models/card');
 const NOT_FOUND_CARD_ERROR_TEXT = 'Карточка не найдена';
 
 const {
-  ValidationError, Default400Error, NotFoundError, ForbiddenError,
+  ValidationError, Default400Error, getValidationErrorText, NotFoundError, ForbiddenError,
 } = require('../utils/Errors');
 
 const {
@@ -88,7 +88,7 @@ const createCard = (req, res, next) => {
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError(err.errors));
+        next(new ValidationError(getValidationErrorText(err.errors)));
       } else {
         next(err);
       }

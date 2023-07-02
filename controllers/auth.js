@@ -6,7 +6,7 @@ const users = require('../models/user');
 const USER_409_ERROR_TEXT = 'Пользователь с таким email уже существует';
 
 const {
-  ValidationError, UserExist, AuthError,
+  ValidationError, UserExist, AuthError, getValidationErrorText,
 } = require('../utils/Errors');
 
 const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new AuthError('Неверное сочетание почты и пароля'));
@@ -59,7 +59,7 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError(err.errors));
+        next(new ValidationError(getValidationErrorText(err.errors)));
       } else
       if (err.name === 'MongoServerError') {
         next(new UserExist(USER_409_ERROR_TEXT));
