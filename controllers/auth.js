@@ -58,7 +58,7 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'MongoServerError') {
+      if (err.code === 11000) {
         next(new UserExist(USER_409_ERROR_TEXT));
       } else {
         next(err);
