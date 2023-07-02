@@ -9,7 +9,7 @@ const {
 const getCards = (req, res, next) => {
   cards.find({})
     .then((cardsData) => res.send({ data: cardsData }))
-    .catch(() => next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT)));
+    .catch(next);
 };
 
 const deleteCardById = (req, res, next) => {
@@ -25,8 +25,15 @@ const deleteCardById = (req, res, next) => {
           return;
         }
 
-        cards.deleteOne({ _id: cardId }).then(() => res.send({ data: cardsData }))
-          .catch(() => next(new Default400Error('Ошибка удаления карточки')));
+        cards.deleteOne({ _id: 'cardId' })
+          .then(() => res.send({ data: cardsData }))
+          .catch((err) => {
+            if (err === 'CastError') {
+              next(new Default400Error('Ошибка удаления карточки'));
+              return;
+            }
+            next(err);
+          });
         return;
       }
 
