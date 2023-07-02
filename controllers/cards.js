@@ -3,7 +3,7 @@ const cards = require('../models/card');
 const NOT_FOUND_CARD_ERROR_TEXT = 'Карточка не найдена';
 
 const {
-  ValidationError, Default400Error, getValidationErrorText, NotFoundError, ForbiddenError,
+  Default400Error, NotFoundError, ForbiddenError,
 } = require('../utils/Errors');
 
 const {

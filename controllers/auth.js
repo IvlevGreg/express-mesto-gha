@@ -6,7 +6,7 @@ const users = require('../models/user');
 const USER_409_ERROR_TEXT = 'Пользователь с таким email уже существует';
 
 const {
-  ValidationError, UserExist, AuthError, getValidationErrorText,
+  UserExist, AuthError,
 } = require('../utils/Errors');
 
 const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new AuthError('Неверное сочетание почты и пароля'));
