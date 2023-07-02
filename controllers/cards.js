@@ -25,7 +25,7 @@ const deleteCardById = (req, res, next) => {
         return;
       }
 
-      cards.deleteOne({ _id: 'cardId' })
+      cards.deleteOne({ _id: cardId })
         .then(() => res.send({ data: cardsData }))
         .catch((err) => {
           if (err === 'CastError') {
