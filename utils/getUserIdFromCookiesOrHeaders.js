@@ -4,7 +4,7 @@ const {
   AuthError,
 } = require('./Errors/AuthError');
 
-const getVerifyDataFromToken = (req) => {
+const getUserIdFromCookiesOrHeaders = (req) => {
   const tokenCoookie = req.cookies.jwt;
   const { authorization } = req.headers;
 
@@ -21,4 +21,4 @@ const getVerifyDataFromToken = (req) => {
   }
 };
 
-module.exports = { getVerifyDataFromToken };
+module.exports = { getUserIdFromCookiesOrHeaders };

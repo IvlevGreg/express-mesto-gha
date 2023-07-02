@@ -1,9 +1,9 @@
 const {
-  getVerifyDataFromToken,
-} = require('../utils/getVerifyDataFromToken');
+  getUserIdFromCookiesOrHeaders,
+} = require('../utils/getUserIdFromCookiesOrHeaders');
 
 module.exports = (req, res, next) => {
-  const token = getVerifyDataFromToken(req);
+  const token = getUserIdFromCookiesOrHeaders(req);
   req.user = token;
 
   next();
