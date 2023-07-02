@@ -58,9 +58,6 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new ValidationError(getValidationErrorText(err.errors)));
-      } else
       if (err.name === 'MongoServerError') {
         next(new UserExist(USER_409_ERROR_TEXT));
       } else {

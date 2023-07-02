@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
+const createCustomErrors = require('./middlewares/createCustomErrors');
 
 const routes = require('./routes');
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use('/', routes);
 
 app.use(errors());
+app.use(createCustomErrors);
 app.use(errorHandler);
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
