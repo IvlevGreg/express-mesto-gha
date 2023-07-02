@@ -29,15 +29,13 @@ const deleteCardById = (req, res, next) => {
           return;
         }
 
-        cards.deleteOne({ _id: cardId }).then(() => res.send({ data: cardsData }));
+        cards.deleteOne({ _id: cardId }).then(() => res.send({ data: cardsData })).catch(() => next(new Default400Error('Ошибка удаления карточки')));
         return;
       }
 
       throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
     })
-    .catch(() => {
-      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
-    });
+    .catch(next);
 };
 
 const deleteLikeByCardId = (req, res, next) => {
@@ -56,9 +54,7 @@ const deleteLikeByCardId = (req, res, next) => {
       }
       next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     })
-    .catch(() => {
-      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
-    });
+    .catch(next);
 };
 
 const putLikeByCardId = (req, res, next) => {
@@ -77,9 +73,7 @@ const putLikeByCardId = (req, res, next) => {
       }
       next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
     })
-    .catch(() => {
-      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
-    });
+    .catch(next);
 };
 
 const createCard = (req, res, next) => {
@@ -97,8 +91,11 @@ const createCard = (req, res, next) => {
   })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') next(new ValidationError(err.errors));
-      return next();
+      if (err.name === 'ValidationError') {
+        next(new ValidationError(err.errors));
+      } else {
+        next(err);
+      }
     });
 };
 
