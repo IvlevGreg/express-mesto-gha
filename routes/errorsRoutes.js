@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const {
   handle404Errors,
-} = require('../controllers/errors');
+} = require('../controllers/handle404Errors');
 
 router.all('*', handle404Errors);
 
