@@ -22,7 +22,7 @@ const deleteCardById = (req, res, next) => {
   cards.findById(cardId)
     .then((cardsData) => {
       if (cardsData) {
-        const { _id } = getUserIdFromCookiesOrHeaders(req);
+        const { _id } = getUserIdFromCookiesOrHeaders(req, next);
 
         if (_id !== cardsData.owner.toHexString()) {
           next(new ForbiddenError('Вы пытаетесь удалить карточку другого пользователя'));

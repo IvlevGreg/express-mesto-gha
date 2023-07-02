@@ -36,7 +36,7 @@ const getUserById = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  const token = getUserIdFromCookiesOrHeaders(req);
+  const token = getUserIdFromCookiesOrHeaders(req, next);
 
   findUserById(token, res, next);
 };

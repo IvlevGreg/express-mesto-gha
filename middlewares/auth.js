@@ -3,7 +3,7 @@ const {
 } = require('../utils/getUserIdFromCookiesOrHeaders');
 
 module.exports = (req, res, next) => {
-  const token = getUserIdFromCookiesOrHeaders(req);
+  const token = getUserIdFromCookiesOrHeaders(req, next);
   req.user = token;
 
   next();

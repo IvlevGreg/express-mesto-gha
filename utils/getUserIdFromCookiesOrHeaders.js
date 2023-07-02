@@ -4,20 +4,21 @@ const {
   AuthError,
 } = require('./Errors/AuthError');
 
-const getUserIdFromCookiesOrHeaders = (req) => {
-  const tokenCoookie = req.cookies.jwt;
+const getUserIdFromCookiesOrHeaders = (req, next) => {
+  const tokenCookie = req.cookies.jwt;
   const { authorization } = req.headers;
 
-  if (!tokenCoookie && !(authorization && authorization.startsWith('Bearer '))) {
-    throw new AuthError();
+  if (!tokenCookie && !(authorization && authorization.startsWith('Bearer '))) {
+    next(new AuthError());
+    return;
   }
 
-  const token = tokenCoookie || authorization.replace('Bearer ', '');
+  const token = tokenCookie || authorization.replace('Bearer ', '');
 
   try {
     return jwt.verify(token, 'super-strong-secret');
   } catch (err) {
-    throw new AuthError();
+    next(new AuthError());
   }
 };
 
