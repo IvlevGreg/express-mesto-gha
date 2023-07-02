@@ -82,10 +82,6 @@ const createCard = (req, res, next) => {
   } = req.body;
   const userId = req.user._id;
 
-  if (!(name && link)) {
-    throw new Default400Error();
-  }
-
   cards.create({
     name, link, owner: userId,
   })

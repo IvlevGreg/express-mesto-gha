@@ -6,7 +6,7 @@ const users = require('../models/user');
 const USER_409_ERROR_TEXT = 'Пользователь с таким email уже существует';
 
 const {
-  ValidationError, Default400Error, UserExist, AuthError,
+  ValidationError, UserExist, AuthError,
 } = require('../utils/Errors');
 
 const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new AuthError('Неверное сочетание почты и пароля'));
@@ -34,9 +34,6 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!(email && password)) {
-    throw new Default400Error();
-  }
 
   bcrypt.hash(password, 10).then((hash) => users.create({
     email, password: hash, name, about, avatar,
