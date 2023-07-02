@@ -86,11 +86,7 @@ const createCard = (req, res, next) => {
     name, link, owner: userId,
   })
     .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => {
-      {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {
