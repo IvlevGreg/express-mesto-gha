@@ -2,9 +2,8 @@ const DEFAULT_400_ERROR_TEXT = 'Переданы некорректные дан
 
 class Default400Error extends Error {
   constructor(message = DEFAULT_400_ERROR_TEXT) {
-    super();
+    super(message);
     this.statusCode = 400;
-    this.message = message;
   }
 }
 
