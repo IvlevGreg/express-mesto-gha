@@ -9,11 +9,11 @@ const {
   getUserMe,
 } = require('../controllers/users');
 
-const { LINK_PATTERN } = require('../utils/linkPattern');
+const { LINK_PATTERN } = require('../utils/LINK_PATTERN');
 
 const validateUserId = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required().min(5),
+    userId: Joi.string().required().hex(),
   }),
 });
 
@@ -21,7 +21,6 @@ const validatePatchMe = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
-    avatar: Joi.string().pattern(LINK_PATTERN),
   }),
 });
 

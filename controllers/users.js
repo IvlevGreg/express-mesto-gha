@@ -5,8 +5,8 @@ const {
 } = require('../utils/Errors');
 
 const {
-  getVerifyDataFromToken,
-} = require('../utils/getVerifyDataFromToken');
+  getUserIdFromCookiesOrHeaders,
+} = require('../utils/getUserIdFromCookiesOrHeaders');
 
 const NOT_FOUND_USER_ERROR_TEXT = 'Пользователь не найден';
 
@@ -36,7 +36,7 @@ const getUserById = (req, res, next) => {
 };
 
 const getUserMe = (req, res, next) => {
-  const token = getVerifyDataFromToken(req);
+  const token = getUserIdFromCookiesOrHeaders(req, next);
 
   findUserById(token, res, next);
 };

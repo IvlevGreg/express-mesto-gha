@@ -6,10 +6,10 @@ const users = require('../models/user');
 const USER_409_ERROR_TEXT = 'Пользователь с таким email уже существует';
 
 const {
-  ValidationError, Default400Error, UserExist, AuthError,
+  UserExist, AuthError,
 } = require('../utils/Errors');
 
-const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new Error('Неправильные почта или пароль'));
+const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new AuthError('Неверное сочетание почты и пароля'));
 
 const login = (req, res, next) => {
   const { password, email } = req.body;
@@ -27,30 +27,18 @@ const login = (req, res, next) => {
 
       res.send({ message: 'Всё верно!' });
     })
-    .catch(() => {
-      next(new AuthError());
-    });
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!(email && password)) {
-    throw new Default400Error();
-  }
 
   bcrypt.hash(password, 10).then((hash) => users.create({
     email, password: hash, name, about, avatar,
   })
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000,
-          httpOnly: true,
-        });
-
       const {
         name: nameData,
         email: emailData,
@@ -70,9 +58,11 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') next(new ValidationError(err.errors));
-      if (err.name === 'MongoServerError') next(new UserExist(USER_409_ERROR_TEXT));
-      next(new Default400Error());
+      if (err.name === 'MongoServerError') {
+        next(new UserExist(USER_409_ERROR_TEXT));
+      } else {
+        next(err);
+      }
     }));
 };
 

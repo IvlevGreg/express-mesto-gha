@@ -4,6 +4,7 @@ const { ValidationError } = require('./ValidationError');
 const { Default400Error } = require('./Default400Error');
 const { UserExist } = require('./UserExist');
 const { ForbiddenError } = require('./ForbiddenError');
+const { getValidationErrorText } = require('./getValidationErrorText');
 
 module.exports = {
   AuthError,
@@ -12,4 +13,5 @@ module.exports = {
   Default400Error,
   UserExist,
   ForbiddenError,
+  getValidationErrorText,
 };

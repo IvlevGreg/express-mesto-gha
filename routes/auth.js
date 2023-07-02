@@ -5,7 +5,7 @@ const {
   createUser,
   login,
 } = require('../controllers/auth');
-const { LINK_PATTERN } = require('../utils/linkPattern');
+const { LINK_PATTERN } = require('../utils/LINK_PATTERN');
 
 const validateEmailAndPasswordField = {
   email: Joi.string().required().email(),

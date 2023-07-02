@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-const { LINK_PATTERN } = require('../utils/linkPattern');
+const { LINK_PATTERN } = require('../utils/LINK_PATTERN');
 
 const {
   getCards,
@@ -14,7 +14,7 @@ const {
 
 const validateCardId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().min(5),
+    cardId: Joi.string().required().hex(),
   }),
 });
 
