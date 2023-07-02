@@ -6,34 +6,34 @@ const {
   Default400Error, NotFoundError, ForbiddenError,
 } = require('../utils/Errors');
 
-const {
-  getUserIdFromCookiesOrHeaders,
-} = require('../utils/getUserIdFromCookiesOrHeaders');
-
 const getCards = (req, res, next) => {
   cards.find({})
     .then((cardsData) => res.send({ data: cardsData }))
-    .catch(() => next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT)));
+    .catch(next);
 };
 
 const deleteCardById = (req, res, next) => {
   const { cardId } = req.params;
 
   cards.findById(cardId)
+    .orFail(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT))
     .then((cardsData) => {
-      if (cardsData) {
-        const { _id } = getUserIdFromCookiesOrHeaders(req, next);
+      const { _id } = req.user;
 
-        if (_id !== cardsData.owner.toHexString()) {
-          next(new ForbiddenError('Вы пытаетесь удалить карточку другого пользователя'));
-          return;
-        }
-
-        cards.deleteOne({ _id: cardId }).then(() => res.send({ data: cardsData })).catch(() => next(new Default400Error('Ошибка удаления карточки')));
+      if (_id !== cardsData.owner.toHexString()) {
+        next(new ForbiddenError('Вы пытаетесь удалить карточку другого пользователя'));
         return;
       }
 
-      throw new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT);
+      cards.deleteOne({ _id: cardId })
+        .then(() => res.send({ data: cardsData }))
+        .catch((err) => {
+          if (err === 'CastError') {
+            next(new Default400Error('Ошибка удаления карточки'));
+            return;
+          }
+          next(err);
+        });
     })
     .catch(next);
 };
@@ -47,13 +47,8 @@ const deleteLikeByCardId = (req, res, next) => {
     { $pull: { likes: userId } }, // убрать _id из массива
     { new: true },
   )
-    .then((like) => {
-      if (like) {
-        res.send({ data: like });
-        return;
-      }
-      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
-    })
+    .orFail(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT))
+    .then((like) => res.send({ data: like }))
     .catch(next);
 };
 
@@ -66,13 +61,8 @@ const putLikeByCardId = (req, res, next) => {
     { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .then((like) => {
-      if (like) {
-        res.send({ data: like });
-        return;
-      }
-      next(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT));
-    })
+    .orFail(new NotFoundError(NOT_FOUND_CARD_ERROR_TEXT))
+    .then((like) => res.send({ data: like }))
     .catch(next);
 };
 

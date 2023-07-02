@@ -12,6 +12,7 @@
     "no-underscore-dangle": ["error",{"allow":["_id"]}],
     "consistent-return": 0,
     "no-useless-escape": 2,
-    "no-console": "error"
+    "no-console": "error",
+    "max-len": ["warn", { "code": 100 }]
   }
 }

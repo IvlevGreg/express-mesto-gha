@@ -13,7 +13,7 @@ const { LINK_PATTERN } = require('../utils/LINK_PATTERN');
 
 const validateUserId = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required().hex(),
+    userId: Joi.string().required().hex().length(24),
   }),
 });
 

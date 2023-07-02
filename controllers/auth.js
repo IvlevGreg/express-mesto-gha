@@ -9,7 +9,9 @@ const {
   UserExist, AuthError,
 } = require('../utils/Errors');
 
-const rejectPromiseWrongEmailOrPassword = () => Promise.reject(new AuthError('Неверное сочетание почты и пароля'));
+const rejectPromiseWrongEmailOrPassword = () => Promise.reject(
+  new AuthError('Неверное сочетание почты и пароля'),
+);
 
 const login = (req, res, next) => {
   const { password, email } = req.body;
@@ -35,35 +37,36 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  bcrypt.hash(password, 10).then((hash) => users.create({
-    email, password: hash, name, about, avatar,
-  })
-    .then((user) => {
-      const {
-        name: nameData,
-        email: emailData,
-        about: aboutData,
-        avatar: avatarData,
-        _id,
-      } = user;
-
-      res.status(201).send({
-        data: {
+  bcrypt.hash(password, 10)
+    .then((hash) => users.create({
+      email, password: hash, name, about, avatar,
+    })
+      .then((user) => {
+        const {
           name: nameData,
           email: emailData,
           about: aboutData,
           avatar: avatarData,
           _id,
-        },
-      });
-    })
-    .catch((err) => {
-      if (err.name === 'MongoServerError') {
-        next(new UserExist(USER_409_ERROR_TEXT));
-      } else {
-        next(err);
-      }
-    }));
+        } = user;
+
+        res.status(201).send({
+          data: {
+            name: nameData,
+            email: emailData,
+            about: aboutData,
+            avatar: avatarData,
+            _id,
+          },
+        });
+      })
+      .catch((err) => {
+        if (err.code === 11000) {
+          next(new UserExist(USER_409_ERROR_TEXT));
+        } else {
+          next(err);
+        }
+      }));
 };
 
 module.exports = {
